@@ -2,6 +2,22 @@
 # # ## ### ##### ######## ############# #####################
 ## Linenoise OO REPL facade class (delegation).
 
+# @@ Meta Begin
+# Package linenoise::facade 0
+# Meta author   {Andreas Kupries}
+# Meta location https://core.tcl.tk/akupries/linenoise-utilities
+# Meta platform tcl
+# Meta summary Delegation-based linenoise-based read-eval-print-loop.
+# Meta description Sub-class of 'linenoise::repl' enabling customization
+# Meta description by delegation.
+# Meta subject {command loop} repl {read eval print loop} {command dispatcher}
+# Meta subject linenoise {line editor} readline editline {edit line} tty console
+# Meta subject terminal {read line} {line reader}
+# Meta require {Tcl 8.5-}
+# Meta require TclOO  
+# Meta require linenoise::repl
+# @@ Meta End
+
 # # ## ### ##### ######## ############# #####################
 ## Requisites
 

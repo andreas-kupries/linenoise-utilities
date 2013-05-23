@@ -2,6 +2,25 @@
 # # ## ### ##### ######## ############# #####################
 ## Linenoise OO REPL base class.
 
+# @@ Meta Begin
+# Package linenoise::repl 0
+# Meta author   {Andreas Kupries}
+# Meta location https://core.tcl.tk/akupries/linenoise-utilities
+# Meta platform tcl
+# Meta summary Object-oriented linenoise-based read-eval-print-loop.
+# Meta description Base class for a linenoise-based read-eval-print-loop.
+# Meta description Essentially an object-oriented equivalent of 'linenoise::cmdloop'
+# Meta description provided by the core 'linenoise' package/binding. Customize
+# Meta description the command loop by sub-classing.
+# Meta subject {command loop} repl {read eval print loop} {command dispatcher}
+# Meta subject linenoise {line editor} readline editline {edit line} tty console
+# Meta subject terminal {read line} {line reader}
+# Meta require {Tcl 8.5-}
+# Meta require TclOO  
+# Meta require linenoise
+# Meta require oo::util
+# @@ Meta End
+
 # # ## ### ##### ######## ############# #####################
 ## Requisites
 
