@@ -1,9 +1,10 @@
 ## -*- tcl -*-
 # # ## ### ##### ######## ############# #####################
+## (c) 2013-2014 Andreas Kupries
 ## Linenoise OO REPL base class.
 
 # @@ Meta Begin
-# Package linenoise::repl 0
+# Package linenoise::repl 0.2
 # Meta author   {Andreas Kupries}
 # Meta location https://core.tcl.tk/akupries/linenoise-utilities
 # Meta platform tcl
@@ -17,7 +18,7 @@
 # Meta subject terminal {read line} {line reader}
 # Meta require {Tcl 8.5-}
 # Meta require TclOO  
-# Meta require linenoise
+# Meta require {linenoise 1.1}
 # Meta require oo::util
 # @@ Meta End
 
@@ -26,7 +27,7 @@
 
 package require Tcl 8.5
 package require TclOO
-package require linenoise
+package require linenoise 1.1 ;# We need/use "linenoise history set"
 package require oo::util
 
 # # ## ### ##### ######## ############# #####################
@@ -37,7 +38,8 @@ oo::class create ::linenoise::repl {
     ## Lifecycle
 
     constructor {} {
-	set myhistory 0
+	set myhistory  0
+	set myhentries {}
 	return
     }
 
@@ -53,11 +55,33 @@ oo::class create ::linenoise::repl {
 	return $myhistory
     }
 
+    method history= {hentries} {
+	# Load a list of history entries into the instance, for use by
+	# the repl. Note that the history is loaded into linenoise
+	# only when the repl is started.
+
+	set myhentries $hentries
+	return
+    }
+
+    method history? {} {
+	return $myhentries
+    }
+
     method repl {} {
 	# Hidden input does not make sense for a command loop. But
 	# save the current state (and restore it at the end), in case
 	# this is nested with some other prompt.
 	set savedhidden [linenoise hidden]
+
+	# Notes on history handling:
+	# - Before the prompt is made any existing history is saved
+	#   and our history added.
+	# - After the prompt our extended history is saved back to
+	#   our instance and any previously existing history loaded back.
+	#
+	# These two complementary actions ensure that nested command lines
+	# each have their own history without bleed-over 
 
 	set run on
 	while {$run && ![my exit]} {
@@ -65,6 +89,11 @@ oo::class create ::linenoise::repl {
 	    set buffer {}
 	    while 1 {
 		linenoise hidden 0
+
+		# Save preceding history, and swap in our own.
+		set outerhistory [linenoise history list]
+		linenoise history set $myhentries
+
 		if {[catch {
 		    # Inlined low-level command.
 		    linenoise::Prompt $prompt [mymethod complete]
@@ -89,7 +118,11 @@ oo::class create ::linenoise::repl {
 	    # Save command.
 	    if {$myhistory} {
 		linenoise history add $buffer
+		# Save back our modified history
+		set myhentries [linenoise history list]
 	    }
+	    # Restore the outer history
+	    linenoise history set $outerhistory
 
 	    # Dispatch for execution.
 	    set type fail
@@ -140,7 +173,7 @@ oo::class create ::linenoise::repl {
     # # ## ### ##### ######## #############
     ## Boolean state flag. Record history or not. Default is not.
 
-    variable myhistory
+    variable myhistory myhentries
 
     ##
     # # ## ### ##### ######## #############
@@ -148,4 +181,4 @@ oo::class create ::linenoise::repl {
 
 # # ## ### ##### ######## ############# #####################
 ## Ready
-package provide linenoise::repl 0.1
+package provide linenoise::repl 0.2
